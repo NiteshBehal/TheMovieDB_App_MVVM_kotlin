@@ -3,7 +3,7 @@ This is a sample app using themoviedb.org api to understand the MVVM pattern usi
 
 Implementation includes the following.
 
-> Kotlin
-> ViewModel for MVVM Pattern
-> RxJava with Retrofit
-> Paging Library
+	• Kotlin,
+	• ViewModel for MVVM Pattern,
+	• RxJava with Retrofit,
+	• Paging Library
