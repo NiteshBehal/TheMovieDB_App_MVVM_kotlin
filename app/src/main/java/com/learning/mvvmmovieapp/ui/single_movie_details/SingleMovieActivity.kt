@@ -19,16 +19,11 @@ import java.util.*
 
 class SingleMovieActivity : AppCompatActivity() {
     private lateinit var viewModel: SingleMovieViewModel
-    private lateinit var movieRepository: MovieDetailsRepository
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_single_movie)
 
         val movieId = intent.getIntExtra("id", 1)
-
-        val apiService: TheMovieDBInterface = TheMovieDBClient.getClient()
-        movieRepository = MovieDetailsRepository(apiService)
 
         viewModel = getViewModel(movieId)
 
@@ -62,7 +57,7 @@ class SingleMovieActivity : AppCompatActivity() {
     private fun getViewModel(movieId: Int): SingleMovieViewModel {
         return ViewModelProvider(this, object : ViewModelProvider.Factory {
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                return SingleMovieViewModel(movieRepository, movieId) as T
+                return SingleMovieViewModel(movieId) as T
             }
         })[SingleMovieViewModel::class.java]
     }

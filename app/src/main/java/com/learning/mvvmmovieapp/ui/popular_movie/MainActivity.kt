@@ -1,34 +1,23 @@
 package com.learning.mvvmmovieapp.ui.popular_movie
 
-import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.learning.mvvmmovieapp.R
-import com.learning.mvvmmovieapp.data.api.TheMovieDBClient
-import com.learning.mvvmmovieapp.data.api.TheMovieDBInterface
 import com.learning.mvvmmovieapp.data.repository.NetworkState
-import com.learning.mvvmmovieapp.ui.single_movie_details.MovieDetailsRepository
-import com.learning.mvvmmovieapp.ui.single_movie_details.SingleMovieActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var viewModel: MainActivityViewModel
-    lateinit var movieRepository: MoviePageListRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        val apiService: TheMovieDBInterface = TheMovieDBClient.getClient()
-        movieRepository = MoviePageListRepository(apiService)
-        viewModel = getViewModel()
-
+        viewModel = ViewModelProvider(this).get(MainActivityViewModel::class.java)
         val movieAdapter = PopularMoviePagedListAdapter(this)
         val gridLayoutManager = GridLayoutManager(this, 3)
 
@@ -57,13 +46,5 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-    }
-
-    private fun getViewModel(): MainActivityViewModel {
-        return ViewModelProvider(this, object : ViewModelProvider.Factory {
-            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                return MainActivityViewModel(movieRepository) as T
-            }
-        })[MainActivityViewModel::class.java]
     }
 }

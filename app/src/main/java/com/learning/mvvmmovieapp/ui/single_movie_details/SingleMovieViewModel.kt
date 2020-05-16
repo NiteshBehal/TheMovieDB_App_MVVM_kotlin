@@ -6,9 +6,12 @@ import com.learning.mvvmmovieapp.data.repository.NetworkState
 import com.learning.mvvmmovieapp.data.vo.MovieDetails
 import io.reactivex.disposables.CompositeDisposable
 
-class SingleMovieViewModel(private val movieRepository: MovieDetailsRepository, movieId: Int) :
+class SingleMovieViewModel(movieId: Int) :
     ViewModel() {
 
+    val movieRepository: MovieDetailsRepository by lazy {
+        MovieDetailsRepository()
+    }
     private val compositeDisposable = CompositeDisposable()
     val movieDetails: LiveData<MovieDetails> by lazy {
 //        movieRepository will get initialized when required, so to improve performance we are using by lazy{}

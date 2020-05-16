@@ -5,6 +5,7 @@ import androidx.lifecycle.Transformations
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.learning.mvvmmovieapp.data.api.POST_PER_PAGE
+import com.learning.mvvmmovieapp.data.api.TheMovieDBClient
 import com.learning.mvvmmovieapp.data.api.TheMovieDBInterface
 import com.learning.mvvmmovieapp.data.repository.MovieDataSource
 import com.learning.mvvmmovieapp.data.repository.MovieDataSourceFactory
@@ -12,10 +13,13 @@ import com.learning.mvvmmovieapp.data.repository.NetworkState
 import com.learning.mvvmmovieapp.data.vo.Movie
 import io.reactivex.disposables.CompositeDisposable
 
-class MoviePageListRepository(private val apiService: TheMovieDBInterface) {
-
+class MoviePageListRepository() {
     lateinit var moviePagedList: LiveData<PagedList<Movie>>
     lateinit var movieDataSourceFactory: MovieDataSourceFactory
+
+    private val apiService: TheMovieDBInterface by lazy {
+        TheMovieDBClient.getClient()
+    }
 
     fun fetchLiveMoviePagedList(compositeDisposable: CompositeDisposable): LiveData<PagedList<Movie>> {
         movieDataSourceFactory = MovieDataSourceFactory(apiService, compositeDisposable)
