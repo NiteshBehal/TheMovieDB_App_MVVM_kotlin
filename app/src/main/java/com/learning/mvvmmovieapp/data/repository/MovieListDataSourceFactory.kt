@@ -7,15 +7,15 @@ import com.learning.mvvmmovieapp.data.vo.Movie
 import io.reactivex.disposables.CompositeDisposable
 
 
-class MovieDataSourceFactory(
+class MovieListDataSourceFactory(
     private val apiService: TheMovieDBInterface,
     private val compositeDisposable: CompositeDisposable
 ) : DataSource.Factory<Int, Movie>() {
 
-    val moviesLiveDataSource = MutableLiveData<MovieDataSource>()
+    val moviesLiveDataSource = MutableLiveData<MovieListDataSource>()
 
     override fun create(): DataSource<Int, Movie> {
-        val moviesDataSource = MovieDataSource(apiService, compositeDisposable)
+        val moviesDataSource = MovieListDataSource(apiService, compositeDisposable)
         moviesLiveDataSource.postValue(moviesDataSource)
         return moviesDataSource
     }

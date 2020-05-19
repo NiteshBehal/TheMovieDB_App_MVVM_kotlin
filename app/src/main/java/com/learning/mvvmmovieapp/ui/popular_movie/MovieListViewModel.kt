@@ -7,7 +7,7 @@ import com.learning.mvvmmovieapp.data.repository.NetworkState
 import com.learning.mvvmmovieapp.data.vo.Movie
 import io.reactivex.disposables.CompositeDisposable
 
-class MainActivityViewModel(): ViewModel() {
+class MovieListViewModel(): ViewModel() {
     private val compositeDisposable by lazy {
         CompositeDisposable()
     }

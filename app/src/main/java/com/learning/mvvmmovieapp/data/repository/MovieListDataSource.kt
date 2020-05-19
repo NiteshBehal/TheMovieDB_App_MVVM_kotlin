@@ -9,7 +9,7 @@ import com.learning.mvvmmovieapp.data.vo.Movie
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 
-class MovieDataSource(
+class MovieListDataSource(
     private val apiService: TheMovieDBInterface,
     private val compositeDisposable: CompositeDisposable
 ) : PageKeyedDataSource<Int, Movie>() {
@@ -29,7 +29,7 @@ class MovieDataSource(
                     networkState.postValue(NetworkState.LOADED)
                 }, {
                     networkState.postValue(NetworkState.ERROR)
-                    Log.e("MovieDetailsDataSource", it.message)
+                    Log.e("MovieDetailsDataSource", it.message?:"")
                 })
         )
     }
@@ -48,7 +48,7 @@ class MovieDataSource(
 
             }, {
                 networkState.postValue(NetworkState.ERROR)
-                Log.e("MovieDetailsDataSource", it.message)
+                Log.e("MovieDetailsDataSource", it.message?:"")
             })
         )
     }

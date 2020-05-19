@@ -1,25 +1,34 @@
 package com.learning.mvvmmovieapp.ui.popular_movie
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.learning.mvvmmovieapp.R
 import com.learning.mvvmmovieapp.data.repository.NetworkState
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.fragment_movie_list.*
 
-class MainActivity : AppCompatActivity() {
+class MovieListFragment : Fragment() {
 
-    private lateinit var viewModel: MainActivityViewModel
+    private lateinit var viewModel: MovieListViewModel
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        viewModel = ViewModelProvider(this).get(MainActivityViewModel::class.java)
-        val movieAdapter = PopularMoviePagedListAdapter(this)
-        val gridLayoutManager = GridLayoutManager(this, 3)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_movie_list, container, false)
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        viewModel = ViewModelProvider(this).get(MovieListViewModel::class.java)
+        val movieAdapter = MoviePagedListAdapter(requireContext())
+        val gridLayoutManager = GridLayoutManager(requireContext(), 3)
 
         gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
@@ -33,11 +42,11 @@ class MainActivity : AppCompatActivity() {
         rv_movie_list.setHasFixedSize(true)
         rv_movie_list.adapter = movieAdapter
 
-        viewModel.moviePagedList.observe(this, Observer {
+        viewModel.moviePagedList.observe(requireActivity(), Observer {
             movieAdapter.submitList(it)
         })
 
-        viewModel.networkState.observe(this, Observer {
+        viewModel.networkState.observe(requireActivity(), Observer {
             progress_bar_popular.visibility = if (viewModel.listIsEmpty() && it == NetworkState.LOADING) View.VISIBLE else View.GONE
             txt_error_popular.visibility = if (viewModel.listIsEmpty() && it == NetworkState.ERROR) View.VISIBLE else View.GONE
 
@@ -45,6 +54,5 @@ class MainActivity : AppCompatActivity() {
                 movieAdapter.setNetworkState(it)
             }
         })
-
     }
 }

@@ -30,19 +30,20 @@ class MovieDetailsNetworkDataSource(
 
     fun fetchMovieDetails(movieId: Int) {
         _networkState.postValue(NetworkState.LOADING)
-        try{
-            compositeDisposable.add(apiService.getMovieDetails(movieId)
-                .subscribeOn(Schedulers.io())
-                .subscribe({
-                    _downloadedMovieDetailsResponse.postValue(it)
-                    _networkState.postValue(NetworkState.LOADED)
-                },{
-                    _networkState.postValue(NetworkState.ERROR)
-                    Log.e("MovieDetailsDataSource", it.message)
-                })
+        try {
+            compositeDisposable.add(
+                apiService.getMovieDetails(movieId)
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({
+                        _downloadedMovieDetailsResponse.postValue(it)
+                        _networkState.postValue(NetworkState.LOADED)
+                    }, {
+                        _networkState.postValue(NetworkState.ERROR)
+                        Log.e("MovieDetailsDataSource", it.message ?: "")
+                    })
             )
-        }catch(e: Exception){
-            Log.e("MovieDetailsDataSource", e.message)
+        } catch (e: Exception) {
+            Log.e("MovieDetailsDataSource", e.message ?: "")
         }
     }
 

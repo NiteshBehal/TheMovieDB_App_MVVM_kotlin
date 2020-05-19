@@ -5,6 +5,7 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.Navigation
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -13,11 +14,10 @@ import com.learning.mvvmmovieapp.R
 import com.learning.mvvmmovieapp.data.api.POSTER_BASE_URL
 import com.learning.mvvmmovieapp.data.repository.NetworkState
 import com.learning.mvvmmovieapp.data.vo.Movie
-import com.learning.mvvmmovieapp.ui.single_movie_details.SingleMovieActivity
 import kotlinx.android.synthetic.main.movie_list_item.view.*
 import kotlinx.android.synthetic.main.network_state_item.view.*
 
-class PopularMoviePagedListAdapter(public val context: Context) :
+class MoviePagedListAdapter(public val context: Context) :
     PagedListAdapter<Movie, RecyclerView.ViewHolder>(MovieDiffCallBack()) {
 
     val MOVIE_VIEW_TYPE = 1
@@ -40,7 +40,7 @@ class PopularMoviePagedListAdapter(public val context: Context) :
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (getItemViewType(position) == MOVIE_VIEW_TYPE) {
-            (holder as MovieItemViewHolder).bind(getItem(position), context)
+            (holder as MovieItemViewHolder).bind(getItem(position))
         } else {
             (holder as NetworkStateItemViewHolder).bind(networkState)
         }
@@ -74,7 +74,7 @@ class PopularMoviePagedListAdapter(public val context: Context) :
     }
 
     class MovieItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        fun bind(movie: Movie?, context: Context) {
+        fun bind(movie: Movie?) {
             itemView.cv_movie_title.text = movie?.title
             itemView.cv_movie_release_date.text = movie?.releaseDate
 
@@ -84,9 +84,8 @@ class PopularMoviePagedListAdapter(public val context: Context) :
                 .into(itemView.cv_iv_movie_poster);
 
             itemView.setOnClickListener {
-                val intent = Intent(context, SingleMovieActivity::class.java)
-                intent.putExtra("id", movie?.id)
-                context.startActivity(intent)
+                val action = MovieListFragmentDirections.movieListToDetail(movie?.id ?: 0)
+                Navigation.findNavController(it).navigate(action)
             }
         }
     }

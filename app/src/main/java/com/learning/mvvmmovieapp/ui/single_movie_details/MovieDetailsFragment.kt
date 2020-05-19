@@ -1,39 +1,45 @@
 package com.learning.mvvmmovieapp.ui.single_movie_details
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.learning.mvvmmovieapp.R
 import com.learning.mvvmmovieapp.data.api.POSTER_BASE_URL
-import com.learning.mvvmmovieapp.data.api.TheMovieDBClient
-import com.learning.mvvmmovieapp.data.api.TheMovieDBInterface
 import com.learning.mvvmmovieapp.data.repository.NetworkState
 import com.learning.mvvmmovieapp.data.vo.MovieDetails
-import kotlinx.android.synthetic.main.activity_single_movie.*
+import kotlinx.android.synthetic.main.fragment_movie_details.*
 import java.text.NumberFormat
 import java.util.*
 
-class SingleMovieActivity : AppCompatActivity() {
-    private lateinit var viewModel: SingleMovieViewModel
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_single_movie)
+class MovieDetailsFragment : Fragment() {
 
-        val movieId = intent.getIntExtra("id", 1)
+    private lateinit var detailsViewModel: MovieDetailsViewModel
 
-        viewModel = getViewModel(movieId)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_movie_details, container, false)
+    }
 
-        viewModel.movieDetails.observe(this, Observer {
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        var movieId = MovieDetailsFragmentArgs.fromBundle(requireArguments()).movieId
+        detailsViewModel = getViewModel(movieId)
+        detailsViewModel.movieDetails.observe(requireActivity(), Observer {
             bindUI(it)
         })
-
-        viewModel.networkState.observe(this, Observer {
-            progress_bar.visibility  = if(it == NetworkState.LOADING) View.VISIBLE else View.GONE
-            txt_error.visibility = if(it == NetworkState.ERROR) View.VISIBLE else View.GONE
+        detailsViewModel.networkState.observe(requireActivity(), Observer {
+            progress_bar.visibility =
+                if (it == NetworkState.LOADING) View.VISIBLE else View.GONE
+            txt_error.visibility = if (it == NetworkState.ERROR) View.VISIBLE else View.GONE
         })
     }
 
@@ -54,11 +60,13 @@ class SingleMovieActivity : AppCompatActivity() {
 
     }
 
-    private fun getViewModel(movieId: Int): SingleMovieViewModel {
+    @Suppress("UNCHECKED_CAST")
+    private fun getViewModel(movieId: Int): MovieDetailsViewModel {
         return ViewModelProvider(this, object : ViewModelProvider.Factory {
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                return SingleMovieViewModel(movieId) as T
+                return MovieDetailsViewModel(movieId) as T
             }
-        })[SingleMovieViewModel::class.java]
+        })[MovieDetailsViewModel::class.java]
     }
+
 }
