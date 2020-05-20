@@ -31,7 +31,7 @@ class MoviePageListRepository() {
         return moviePagedList
     }
 
-    fun getNetworkState(): LiveData<NetworkState>{
+    fun getNetworkState(): LiveData<NetworkState> {
         return Transformations.switchMap<MovieListDataSource, NetworkState>(
             movieListDataSourceFactory.moviesLiveDataSource, MovieListDataSource::networkState
         )

@@ -19,13 +19,17 @@ class MovieDetailsRepository() {
 
     lateinit var movieDetailsNetworkDataSource: MovieDetailsNetworkDataSource
 
-    fun fetchSingleMovieDetails(compositeDisposable: CompositeDisposable, movieId: Int): LiveData<MovieDetails>{
-        movieDetailsNetworkDataSource = MovieDetailsNetworkDataSource(apiService, compositeDisposable)
+    fun fetchSingleMovieDetails(
+        compositeDisposable: CompositeDisposable,
+        movieId: Int
+    ): LiveData<MovieDetails> {
+        movieDetailsNetworkDataSource =
+            MovieDetailsNetworkDataSource(apiService, compositeDisposable)
         movieDetailsNetworkDataSource.fetchMovieDetails(movieId)
         return movieDetailsNetworkDataSource.downloadedMovieResponse
     }
 
-    fun getMovieDetailsNetworkState(): LiveData<NetworkState>{
+    fun getMovieDetailsNetworkState(): LiveData<NetworkState> {
         return movieDetailsNetworkDataSource.networkState
     }
 }

@@ -1,5 +1,7 @@
 package com.learning.mvvmmovieapp.data.vo
+
 import com.google.gson.annotations.SerializedName
+
 
 data class Movie(
     val id: Int,

@@ -1,7 +1,5 @@
 package com.learning.mvvmmovieapp.ui.popular_movie
 
-import android.content.Context
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,15 +7,13 @@ import androidx.navigation.Navigation
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.learning.mvvmmovieapp.R
-import com.learning.mvvmmovieapp.data.api.POSTER_BASE_URL
 import com.learning.mvvmmovieapp.data.repository.NetworkState
 import com.learning.mvvmmovieapp.data.vo.Movie
-import kotlinx.android.synthetic.main.movie_list_item.view.*
+import com.learning.mvvmmovieapp.databinding.MovieListItemBinding
+import com.learning.mvvmmovieapp.databinding.NetworkStateItemBinding
 import kotlinx.android.synthetic.main.network_state_item.view.*
 
-class MoviePagedListAdapter(public val context: Context) :
+class MoviePagedListAdapter() :
     PagedListAdapter<Movie, RecyclerView.ViewHolder>(MovieDiffCallBack()) {
 
     val MOVIE_VIEW_TYPE = 1
@@ -27,14 +23,16 @@ class MoviePagedListAdapter(public val context: Context) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        val view: View
-
         if (viewType == MOVIE_VIEW_TYPE) {
-            view = layoutInflater.inflate(R.layout.movie_list_item, parent, false)
-            return MovieItemViewHolder(view)
+            return MovieItemViewHolder(MovieListItemBinding.inflate(layoutInflater, parent, false))
         } else {
-            view = layoutInflater.inflate(R.layout.network_state_item, parent, false)
-            return NetworkStateItemViewHolder(view)
+            return NetworkStateItemViewHolder(
+                NetworkStateItemBinding.inflate(
+                    layoutInflater,
+                    parent,
+                    false
+                )
+            )
         }
     }
 
@@ -73,32 +71,26 @@ class MoviePagedListAdapter(public val context: Context) :
 
     }
 
-    class MovieItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class MovieItemViewHolder(val view: MovieListItemBinding) : RecyclerView.ViewHolder(view.root) {
         fun bind(movie: Movie?) {
-            itemView.cv_movie_title.text = movie?.title
-            itemView.cv_movie_release_date.text = movie?.releaseDate
-
-            val moviePosterURL = POSTER_BASE_URL + movie?.posterPath
-            Glide.with(itemView.context)
-                .load(moviePosterURL)
-                .into(itemView.cv_iv_movie_poster);
-
-            itemView.setOnClickListener {
-                val action = MovieListFragmentDirections.movieListToDetail(movie?.id ?: 0)
-                Navigation.findNavController(it).navigate(action)
+            movie?.let {
+                view.movie = it
+                itemView.setOnClickListener {
+                    val action = MovieListFragmentDirections.movieListToDetail(movie.id)
+                    Navigation.findNavController(it).navigate(action)
+                }
             }
         }
     }
 
-    class NetworkStateItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-
+    class NetworkStateItemViewHolder(val view: NetworkStateItemBinding) :
+        RecyclerView.ViewHolder(view.root) {
         fun bind(networkState: NetworkState?) {
             if (networkState != null && networkState == NetworkState.LOADING) {
                 itemView.progress_bar_item.visibility = View.VISIBLE;
             } else {
                 itemView.progress_bar_item.visibility = View.GONE;
             }
-
             if (networkState != null && networkState == NetworkState.ERROR) {
                 itemView.error_msg_item.visibility = View.VISIBLE;
                 itemView.error_msg_item.text = networkState.msg;

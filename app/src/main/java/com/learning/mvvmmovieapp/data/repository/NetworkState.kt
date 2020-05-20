@@ -9,9 +9,13 @@ enum class Status {
 class NetworkState(val status: Status, val msg: String) {
     //    We create companion object when we want to make something static
     companion object {
+        @JvmStatic
         val LOADED: NetworkState
+        @JvmStatic
         val LOADING: NetworkState
+        @JvmStatic
         val ERROR: NetworkState
+        @JvmStatic
         val ENDOFLIST: NetworkState
 
         init {
